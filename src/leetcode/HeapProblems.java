@@ -1,10 +1,24 @@
 package leetcode;
 
-import java.awt.event.ComponentAdapter;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class HeapProblems {
+
+    static class Strength implements Comparable<Strength> {
+        int idx; int solders;
+        public Strength(int idx, int solders) {
+            this.idx = idx;
+            this.solders = solders;
+        }
+        @Override
+        public int compareTo(Strength other) {
+            int compare = Integer.compare(this.solders, other.solders);
+            if (compare != 0)
+                return compare;
+            else
+                return Integer.compare(this.idx, other.idx);
+        }
+    }
     public static void main(String[] args) {
 
         HeapProblems heapProblems = new HeapProblems();
@@ -15,8 +29,39 @@ public class HeapProblems {
                 {34,99},
                 {63, 23}
         };
-        heapProblems.deleteGreatestInEachRow(grid);
-        heapProblems.deleteGreatestInRow_NoHeap(grid);
+
+        int[][] mat = new int[][] {
+                {1, 1, 0, 0, 0},
+                {1, 1, 1, 1, 0},
+                {1, 0, 0, 0, 0},
+                {1, 1, 0, 0, 0},
+                {1, 1, 1, 1, 1}
+        };
+        //heapProblems.deleteGreatestInEachRow(grid);
+        //heapProblems.deleteGreatestInRow_NoHeap(grid);
+        heapProblems.kWeakestRows(mat, 3);
+    }
+
+    // https://leetcode.com/problems/the-k-weakest-rows-in-a-matrix/description/
+    public int[] kWeakestRows(int[][] mat, int k) {
+        List<Strength> solderStrength = new ArrayList<>();
+        for (int i = 0; i<mat.length; i++)
+            solderStrength.add(getSolderCount(mat[i], i));
+        Collections.sort(solderStrength);
+        // System.out.println(solderStrength);
+        int[] res = new int[k];
+        for (int i=0; i<res.length; i++)
+            res[i] = solderStrength.get(i).idx;
+        return res;
+    }
+
+    private Strength getSolderCount(int[] row, int idx) {
+        int ctr = 0;
+        for (int i : row) {
+            if (i == 1)
+                ctr++;
+        }
+        return new Strength(idx, ctr);
     }
 
     // https://leetcode.com/problems/delete-greatest-value-in-each-row/
@@ -50,6 +95,7 @@ public class HeapProblems {
         return res;
     }
 
+    // https://leetcode.com/problems/delete-greatest-value-in-each-row/
     public int deleteGreatestInRow_NoHeap(int[][] grid) {
         int res = 0;
         int rows = grid.length;
