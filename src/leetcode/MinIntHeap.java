@@ -82,7 +82,6 @@ public class MinIntHeap {
             }
             idx = smallerIdx;
         }
-
     }
 
     public void heapifyUp() {
